@@ -64,7 +64,7 @@ func TestRemoveContact(t *testing.T) {
 
 	for _, v := range tests {
 		for _, val := range v.before {
-			client.LPush(list, val)
+			client.RPush(list, val)
 		}
 		err := RemoveContact(client, list, v.in)
 		if err != nil {
@@ -72,6 +72,38 @@ func TestRemoveContact(t *testing.T) {
 		}
 
 		out := client.LRange(list, 0, -1).Val()
+		if !reflect.DeepEqual(out, v.out) {
+			t.Errorf("get: %v, want: %v\n", out, v.out)
+		}
+	}
+}
+
+func TestFetchAutocompleteList(t *testing.T) {
+	tests := []struct {
+		in  string
+		out []string
+	}{
+		{
+			in:  "us",
+			out: []string{"user1", "user2"},
+		},
+		{
+			in:  "f",
+			out: []string{"fuga"},
+		},
+	}
+
+	candidates := []string{"user1", "hoge", "fuga", "user2"}
+
+	client := New()
+	list := "recent:"
+	for _, val := range candidates {
+		client.RPush(list, val)
+	}
+	defer client.Del(list)
+
+	for _, v := range tests {
+		out := FetchAutocompleteList(client, list, v.in)
 		if !reflect.DeepEqual(out, v.out) {
 			t.Errorf("get: %v, want: %v\n", out, v.out)
 		}
