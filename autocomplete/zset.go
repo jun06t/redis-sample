@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/go-redis/redis"
-	uuid "github.com/satori/go.uuid"
 )
 
 const validChars = "`abcdefghijklmnopqrstqvwxyz{"
@@ -16,6 +15,7 @@ func FindPrefixRange(prefix string) (start string, end string) {
 	return prefix[:len(prefix)-1] + suffix + "{", prefix + "{"
 }
 
+/*
 func AutocompleteOnPrefix(client *redis.Client, list string, prefix string) []string {
 	start, end := FindPrefixRange(prefix)
 	uv4 := uuid.Must(uuid.NewV4())
@@ -32,7 +32,10 @@ func AutocompleteOnPrefix(client *redis.Client, list string, prefix string) []st
 		})
 		return err
 	}, list)
+
+	return nil
 }
+*/
 
 func JoinList(client *redis.Client, list string, user string) {
 	client.ZAdd(list, redis.Z{Score: 0, Member: user})

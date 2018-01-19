@@ -7,7 +7,7 @@ import (
 )
 
 func AddUpdateContact(client *redis.Client, list string, contact string) error {
-	pipe := client.Pipeline()
+	pipe := client.TxPipeline()
 	pipe.LRem(list, 0, contact)
 	pipe.LPush(list, contact)
 	pipe.LTrim(list, 0, 99)
@@ -17,7 +17,7 @@ func AddUpdateContact(client *redis.Client, list string, contact string) error {
 }
 
 func RemoveContact(client *redis.Client, list string, contact string) error {
-	pipe := client.Pipeline()
+	pipe := client.TxPipeline()
 	pipe.LRem(list, 0, contact)
 	_, err := pipe.Exec()
 
