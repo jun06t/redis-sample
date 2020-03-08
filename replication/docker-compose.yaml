@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  master:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+  slave_1:
+    image: redis:alpine
+    ports:
+      - 6380:6379
+    command: redis-server --slaveof master 6379
+  slave_2:
+    image: redis:alpine
+    ports:
+      - 6381:6379
+    command: redis-server --slaveof master 6379
+  slave_3:
+    image: redis:alpine
+    ports:
+      - 6382:6379
+    command: redis-server --slaveof slave_1 6379
