@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  node_1: &base
+    image: redis:alpine
+    volumes:
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - redis_net
+  node_2:
+    <<: *base
+  node_3:
+    <<: *base
+  node_4:
+    <<: *base
+  node_5:
+    <<: *base
+  node_6:
+    <<: *base
+
+networks:
+  redis_net:
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 172.30.0.0/24
